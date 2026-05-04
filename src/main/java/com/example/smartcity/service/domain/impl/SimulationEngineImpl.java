@@ -25,34 +25,35 @@ public class SimulationEngineImpl implements SimulationEngine {
     @Override
     public DisplaySimulationResultDto simulate(SimulateRequestDto request) {
         return switch (request.getType().toLowerCase()) {
+
             case "traffic"     -> simulateTraffic(request);
             case "temperature" -> simulateTemperature(request);
             case "pollution"   -> simulatePollution(request);
+
             default -> throw new IllegalArgumentException(
                     "Unknown simulation type: " + request.getType()
             );
         };
     }
 
+    // ================= TRAFFIC (MOCK) =================
     private DisplaySimulationResultDto simulateTraffic(SimulateRequestDto request) {
 
-        Map<String, Double> data = cityDataService.getTrafficData();
-
-        Map<String, Object> aiRequest = Map.of(
-                "current_traffic", data.get("vehicleCount") / 100.0,
-                "hour", 12,
-                "weekday", 2,
-                "is_rush_hour", false
-        );
-
-        Map<String, Object> response = aiModelClientService.predictTraffic(aiRequest);
-
-        Double predicted = ((Number) response.get("predictedTraffic")).doubleValue();
-
-        String risk = predicted > 0.7 ? "HIGH" : "LOW";
-
         DisplaySimulationResultDto dto = new DisplaySimulationResultDto();
-        dto.setPredictedTraffic(predicted);
+
+        double traffic = request.getTraffic() != null ? request.getTraffic() : 0.5;
+
+        String risk;
+
+        if (traffic >= 0.8) {
+            risk = "HIGH";
+        } else if (traffic >= 0.5) {
+            risk = "MEDIUM";
+        } else {
+            risk = "LOW";
+        }
+
+        dto.setPredictedTraffic(traffic);
         dto.setTrafficRiskLevel(risk);
         dto.setOverallRiskLevel(risk);
         dto.setGeneratedAt(LocalDateTime.now());
@@ -60,22 +61,25 @@ public class SimulationEngineImpl implements SimulationEngine {
         return dto;
     }
 
+    // ================= TEMPERATURE (AI MODEL) =================
     private DisplaySimulationResultDto simulateTemperature(SimulateRequestDto request) {
 
-        Map<String, Double> data = cityDataService.getTemperatureData();
+        Map<String, Object> aiRequest = new java.util.HashMap<>();
 
-        Map<String, Object> aiRequest = Map.of(
-                "current_temperature", data.get("baseTemperature"),
-                "humidity", 60.0,
-                "month", 5,
-                "hour", 12
-        );
+        aiRequest.put("date", request.getDate());
+        aiRequest.put("time", request.getTime());
+        aiRequest.put("zone", request.getZone());
+        aiRequest.put("temp_history", request.getTempHistory());
+
+        aiRequest.put("humidity", request.getHumidity() != null ? request.getHumidity() : 65.0);
+        aiRequest.put("wind_speed", request.getWindSpeed() != null ? request.getWindSpeed() : 2.0);
+        aiRequest.put("precipitation", request.getPrecipitation() != null ? request.getPrecipitation() : 0.0);
+        aiRequest.put("pressure", request.getPressure() != null ? request.getPressure() : 1013.0);
 
         Map<String, Object> response = aiModelClientService.predictTemperature(aiRequest);
 
-        Double predicted = ((Number) response.get("predictedTemperature")).doubleValue();
-
-        String risk = predicted > 35 ? "HIGH" : "LOW";
+        Double predicted = ((Number) response.get("predicted_temperature_c")).doubleValue();
+        String risk = response.get("heat_risk_level").toString();
 
         DisplaySimulationResultDto dto = new DisplaySimulationResultDto();
         dto.setPredictedTemperature(predicted);
@@ -86,15 +90,14 @@ public class SimulationEngineImpl implements SimulationEngine {
         return dto;
     }
 
+    // ================= POLLUTION =================
     private DisplaySimulationResultDto simulatePollution(SimulateRequestDto request) {
-
-        Map<String, Double> data = cityDataService.getPollutionData();
 
         Map<String, Object> aiRequest = Map.of(
                 "temperature", 20.0,
                 "humidity", 60.0,
                 "wind_speed", 3.0,
-                "traffic", 0.5,
+                "traffic", request.getTraffic() != null ? request.getTraffic() : 0.5,
                 "hour", 12,
                 "month", 5,
                 "weekday", 2

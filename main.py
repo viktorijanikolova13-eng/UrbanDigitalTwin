@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from predict_api import predict
 
 app = FastAPI()
 
@@ -24,3 +25,9 @@ def predict_pollution(request: PollutionRequest):
     return {
         "predictedPm25": round(prediction, 2)
     }
+
+
+
+@app.post("/predict/temperature")
+def predict_temperature(input_data: dict):
+    return predict(input_data)
