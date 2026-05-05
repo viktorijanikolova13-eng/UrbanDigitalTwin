@@ -1,0 +1,42 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 10px 30px;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo {
+    width: 40px;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.navbar-center {
+    display: flex;
+    gap: 25px;
+}
+
+.navbar-center a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+}
+
+.navbar-right .register-btn {
+    background: #2f80ed;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}

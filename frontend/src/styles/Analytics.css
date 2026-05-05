@@ -1,0 +1,194 @@
+.analysis-container {
+    font-family: Arial, sans-serif;
+    background: #f5f7fb;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    color: #666;
+}
+
+/* ── Form box ── */
+.analysis-box {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 900px;
+    margin: 0 auto 30px auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.field-note {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: normal;
+}
+
+.form-group input,
+.form-group select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group select:disabled {
+    background: #f5f5f5;
+    color: #aaa;
+    cursor: not-allowed;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.reset-link {
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+}
+
+.reset-link:hover {
+    text-decoration: underline;
+}
+
+.generate-btn {
+    background: #2f6fad;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.generate-btn:disabled {
+    opacity: 0.6;
+    cursor: default;
+}
+
+.field-hint {
+    margin-top: 12px;
+    font-size: 13px;
+    color: #2f6fad;
+    background: #eaf2fb;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #2f6fad;
+}
+
+.analytics-error {
+    color: #e74c3c;
+    text-align: center;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+/* ── Charts section ── */
+.chart-section {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.chart-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.export-icon {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #555;
+}
+
+.export-icon:hover {
+    background: #f0f0f0;
+}
+
+/* ── Single chart card ── */
+.chart-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.chart-card h4 {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ── Triple chart grid (All metrics, bar mode) ── */
+.charts-triple {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ── Tooltip ── */
+.chart-tooltip {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.chart-tooltip .tooltip-label {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+/* ── Empty state ── */
+.chart-empty {
+    text-align: center;
+    color: #999;
+    padding: 60px 20px;
+    font-size: 15px;
+}
