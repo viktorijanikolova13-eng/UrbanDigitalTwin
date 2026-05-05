@@ -4,6 +4,7 @@ import com.example.smartcity.model.domain.Scenario;
 import com.example.smartcity.model.domain.SimulationResult;
 import com.example.smartcity.model.dto.create.SimulateRequestDto;
 import com.example.smartcity.model.dto.display.DisplaySimulationResultDto;
+import com.example.smartcity.model.dto.display.ZoneSimulationResultDto;
 import com.example.smartcity.service.application.SimulationApplicationService;
 import com.example.smartcity.service.domain.LocationService;
 import com.example.smartcity.service.domain.ScenarioService;
@@ -40,12 +41,17 @@ public class SimulationApplicationServiceImpl implements SimulationApplicationSe
     }
 
     @Override
+    public List<ZoneSimulationResultDto> simulateZones(SimulateRequestDto request) {
+        return simulationEngine.simulateZones(request);
+    }
+
+    @Override
     public DisplaySimulationResultDto runSimulation(Long scenarioId) {
         Scenario scenario = scenarioService.findById(scenarioId)
                 .orElseThrow(() -> new RuntimeException("Scenario not found"));
 
         SimulateRequestDto request = new SimulateRequestDto();
-        request.setType("traffic");
+        request.setType("all");
         request.setTrafficMultiplier(scenario.getTrafficMultiplier());
         request.setTemperatureDelta(scenario.getTemperatureDelta());
         request.setPollutionMultiplier(scenario.getPollutionMultiplier());
