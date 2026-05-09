@@ -5,3 +5,7 @@ frontend/build/
 backend/.DS_Store
 frontend/.DS_Store
 backend/src/main/resources/application-local.properties
+
+# Secrets — never commit
+backend/.env
+.env

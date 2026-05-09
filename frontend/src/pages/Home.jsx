@@ -3,6 +3,8 @@ import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import "../styles/Home.css";
 import { FaCar, FaFileExport, FaFire, FaIndustry, FaThermometerHalf, FaSyncAlt } from "react-icons/fa";
+import TrafficModel from "./TrafficModel";
+import MetricPanel from "./MetricPanel";
 
 const SKOPJE_CENTER = [41.993, 21.445];
 
@@ -153,104 +155,10 @@ const Home = () => {
             </div>
 
             <div className="secondDiv">
-
-                <div className="controls">
-                    <div className="controls-left">
-                        <select
-                            className="select-box"
-                            value={activeKey}
-                            onChange={(e) => handleTabClick(e.target.value)}
-                        >
-                            {METRIC_TABS.map(t => (
-                                <option key={t.key} value={t.key}>View: {t.name}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div className="controls-right">
-                        <select
-                            className="select-box"
-                            value={refreshMs}
-                            onChange={(e) => setRefreshMs(Number(e.target.value))}
-                        >
-                            {REFRESH_OPTIONS.map(o => (
-                                <option key={o.ms} value={o.ms}>{o.label}</option>
-                            ))}
-                        </select>
-
-                        <button className="export-icon refresh-btn" title="Refresh now" onClick={fetchZones} disabled={loading}>
-                            <FaSyncAlt className={loading ? "spinning" : ""} />
-                        </button>
-
-                        <button className="export-icon" title="Export CSV" onClick={handleExport} disabled={!zones.length}>
-                            <FaFileExport />
-                        </button>
-                    </div>
-                </div>
-
-                <div className="map-wrapper-home">
-                    <MapContainer
-                        center={SKOPJE_CENTER}
-                        zoom={12}
-                        style={{ height: "450px", width: "100%", borderRadius: "10px" }}
-                        scrollWheelZoom={true}
-                    >
-                        <TileLayer
-                            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-                            attribution='&copy; <a href="https://carto.com/">CARTO</a>'
-                        />
-                        <GeoJSON
-                            key={activeKey + "_" + zones.length}
-                            ref={geoJsonRef}
-                            data={SKOPJE_GEOJSON}
-                            style={geoJsonStyle}
-                            onEachFeature={onEachFeature}
-                        />
-                    </MapContainer>
-
-                    {/* ── Clicked-zone tooltip overlay ── */}
-                    {clickedZone && (
-                        <div className="zone-tooltip-overlay">
-                            <div className="zone-tooltip-title">{clickedZone.zoneName}</div>
-                            {activeKey === "pollution" && <>
-                                <div className="zone-tooltip-row"><span>PM2.5</span><strong>{clickedZone.predictedPollution?.toFixed(1)} µg/m³</strong></div>
-                                <div className="zone-tooltip-row"><span>Air Risk</span><strong style={{ color: riskColor(clickedZone.airRiskLevel) }}>{clickedZone.airRiskLevel}</strong></div>
-                            </>}
-                            {activeKey === "traffic" && <>
-                                <div className="zone-tooltip-row"><span>Vehicles</span><strong>{clickedZone.predictedTraffic?.toFixed(0)}</strong></div>
-                                <div className="zone-tooltip-row"><span>Traffic Risk</span><strong style={{ color: riskColor(clickedZone.trafficRiskLevel) }}>{clickedZone.trafficRiskLevel}</strong></div>
-                            </>}
-                            {activeKey === "temperature" && <>
-                                <div className="zone-tooltip-row"><span>Temperature</span><strong>{clickedZone.predictedTemperature?.toFixed(1)} °C</strong></div>
-                                <div className="zone-tooltip-row"><span>Heat Risk</span><strong style={{ color: riskColor(clickedZone.heatRiskLevel) }}>{clickedZone.heatRiskLevel}</strong></div>
-                            </>}
-                            {activeKey === "heat-risk" && <>
-                                <div className="zone-tooltip-row"><span>Temperature</span><strong>{clickedZone.predictedTemperature?.toFixed(1)} °C</strong></div>
-                                <div className="zone-tooltip-row"><span>PM2.5</span><strong>{clickedZone.predictedPollution?.toFixed(1)} µg/m³</strong></div>
-                                <div className="zone-tooltip-row"><span>Vehicles</span><strong>{clickedZone.predictedTraffic?.toFixed(0)}</strong></div>
-                            </>}
-                            <div className="zone-tooltip-row overall-row">
-                                <span>Overall Risk</span>
-                                <strong style={{ background: riskColor(clickedZone.overallRiskLevel) }} className="risk-badge">
-                                    {clickedZone.overallRiskLevel}
-                                </strong>
-                            </div>
-                            <button className="tooltip-close" onClick={() => setClickedZone(null)}>✕</button>
-                        </div>
-                    )}
-
-                    {/* ── Legend ── */}
-                    <div className="map-legend-home">
-                        {Object.entries(RISK_COLORS).filter(([k]) => !["MEDIUM"].includes(k)).map(([k, v]) => (
-                            <span key={k} style={{ background: v }}>{k.charAt(0) + k.slice(1).toLowerCase()}</span>
-                        ))}
-                    </div>
-
-                    {!zones.length && !loading && (
-                        <div className="map-hint-home">Loading zone data…</div>
-                    )}
-                </div>
-
+                {activeKey === "traffic"     && <TrafficModel embedded />}
+                {activeKey === "pollution"   && <MetricPanel metricType="pollution"    embedded />}
+                {activeKey === "temperature" && <MetricPanel metricType="temperature"  embedded />}
+                {activeKey === "heat-risk"   && <MetricPanel metricType="heat-risk"    embedded />}
             </div>
         </div>
     );

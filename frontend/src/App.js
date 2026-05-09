@@ -7,6 +7,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Prediction from "./pages/Prediction";
 import Simulation from "./pages/Simulation";
 import Analytics from "./pages/Analytics";
+import TrafficModel from "./pages/TrafficModel";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
                   <Route path="/prediction" element={<Prediction />}/>
                   <Route path="/simulation" element={<Simulation />}/>
                   <Route path="/analytics" element={<Analytics />}/>
+                  <Route path="/traffic" element={<TrafficModel />}/>
               </Routes>
 
               <Footer />
