@@ -37,6 +37,24 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("token", token));
     }
 
+    @PutMapping("/update")
+    public ResponseEntity<?> update(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody Map<String, String> body
+    ) {
+
+        User updatedUser = authService.updateUser(
+                userDetails.getUsername(),
+                body.get("username"),
+                body.get("email")
+        );
+
+        return ResponseEntity.ok(Map.of(
+                "username", updatedUser.getUsername(),
+                "email", updatedUser.getEmail()
+        ));
+    }
+
     @GetMapping("/me")
     public ResponseEntity<?> me(@AuthenticationPrincipal UserDetails userDetails) {
         User user = authService.getUser(userDetails.getUsername());

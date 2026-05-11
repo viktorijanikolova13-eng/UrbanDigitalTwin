@@ -140,7 +140,8 @@ const Prediction = () => {
     });
     const [result,       setResult]       = useState(null);
     const [zones,        setZones]        = useState([]);
-    const [selectedZone, setSelectedZone] = useState(null); // captured at generate time
+    const [selectedZone, setSelectedZone] = useState(null);
+    const [selectedType, setSelectedType] = useState("all"); // ← правилно место, внатре во компонентата
     const [loading,      setLoading]      = useState(false);
     const [error,        setError]        = useState(null);
     const geoJsonRef = useRef(null);
@@ -170,11 +171,12 @@ const Prediction = () => {
             const zoneData = await res.json();
             setZones(zoneData);
             setSelectedZone(zoneName);
+            setSelectedType(form.type || "all");
 
             const summary = zoneName
                 ? (zoneData.find(z => z.zoneName === zoneName) ?? deriveSummary(zoneData))
                 : deriveSummary(zoneData);
-            setResult(summary);
+            setResult({ ...summary, activeType: form.type });
 
             if (geoJsonRef.current) geoJsonRef.current.clearLayers().addData(SKOPJE_GEOJSON);
         } catch (err) {
@@ -189,6 +191,7 @@ const Prediction = () => {
         setResult(null);
         setZones([]);
         setSelectedZone(null);
+        setSelectedType("all");
         setError(null);
         if (geoJsonRef.current) geoJsonRef.current.clearLayers().addData(SKOPJE_GEOJSON);
     };
@@ -211,10 +214,20 @@ const Prediction = () => {
 
     const zoneByName = (name) => zones.find(z => z.zoneName === name);
 
+    const getRiskForType = (zone, type) => {
+        switch (type) {
+            case "temperature": return zone.heatRiskLevel;
+            case "pollution":   return zone.airRiskLevel;
+            case "traffic":     return zone.trafficRiskLevel;
+            default:            return zone.overallRiskLevel;
+        }
+    };
+
     const geoJsonStyle = (feature) => {
         const zone = zoneByName(feature.properties.name);
         const isHighlighted = !selectedZone || feature.properties.name === selectedZone;
-        const color = (isHighlighted && zone) ? riskColor(zone.overallRiskLevel) : "#cccccc";
+        const risk = zone ? getRiskForType(zone, selectedType) : null;
+        const color = (isHighlighted && risk) ? riskColor(risk) : "#cccccc";
         return {
             fillColor:   color,
             color:       "#ffffff",
@@ -316,7 +329,7 @@ const Prediction = () => {
                             attribution='&copy; <a href="https://carto.com/">CARTO</a>'
                         />
                         <GeoJSON
-                            key={zones.length}
+                            key={zones.length + selectedType}
                             ref={geoJsonRef}
                             data={SKOPJE_GEOJSON}
                             style={geoJsonStyle}

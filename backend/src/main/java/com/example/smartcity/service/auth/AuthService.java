@@ -44,6 +44,17 @@ public class AuthService {
         return jwtService.generateToken(username);
     }
 
+    public User updateUser(String currentUsername, String newUsername, String newEmail) {
+
+        User user = userRepository.findByUsername(currentUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        user.setUsername(newUsername);
+        user.setEmail(newEmail);
+
+        return userRepository.save(user);
+    }
+
     public User getUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));

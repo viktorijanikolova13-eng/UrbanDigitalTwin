@@ -22,7 +22,6 @@ const Footer = () => {
 
 
                 <div className="footer-middle">
-                    <Link to="/">About us</Link>
                     <Link to="/">Home</Link>
                     <Link to="/prediction">Prediction</Link>
                     <Link to="/simulation">Simulation</Link>
